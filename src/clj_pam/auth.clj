@@ -1,15 +1,9 @@
 (ns clj-pam.auth
-  (:import [net.sf.jpam Pam PamReturnValue PamException]))
+  (:import net.sf.jpam.Pam))
 
-(defn simple-auth 
-  "Just authenticate a username and password."
-  [username, password]
-  (let [pam (new Pam)])
-  (. pam (authenticateSuccessful username password)))
-
-(defn- auth [username password]
-  (. (new Pam) (authenticate username password)))
-
-
-(defn verbose-auth [username password]
-  (. toString (auth username password)))
+(defn simple-auth
+  "Return whether the given username and password (optionally under the given
+  service) are valid according to PAM."
+  ([username password] (simple-auth username password "login"))
+  ([username password service]
+   (.authenticateSuccessful (new Pam service) username password)))
